@@ -41,7 +41,7 @@ class MyUserManager(BaseUserManager):
 
 class UserInfo(AbstractBaseUser):
     email = models.EmailField(
-        verbose_name='email address',
+        verbose_name='이메일',
         max_length=255,
         unique=True,
     )
@@ -80,3 +80,21 @@ class UserInfo(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        'users.UserInfo',
+        related_name='user',
+        on_delete=models.CASCADE,
+    )
+    website = models.CharField(
+        verbose_name='웹사이트',
+        max_length=50,
+        null=True,
+    )
+    introduction = models.TextField(
+        verbose_name='소개글',
+        null=True,
+    )
+
