@@ -17,10 +17,11 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             name=name,
             nickname=nickname,
+            password=password
         )
 
-        user.set_password(password)
-        user.save(using=self._db)
+        # user.set_password(password)
+        user.save()
         return user
 
     def create_superuser(self, email, name, nickname, password=None):
@@ -39,7 +40,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class UserInfo(AbstractBaseUser):
+class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name='이메일',
         max_length=255,
@@ -81,14 +82,23 @@ class UserInfo(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+    def save(self, *args, **kwargs):
+        self.set_password(self.password)
+        super().save(*args, **kwargs)
+
+        if not UserProfile.objects.filter(pk=self.pk):
+            UserProfile.objects.create(
+                user=self
+            )
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
-        'users.UserInfo',
+        'users.User',
         related_name='user',
         on_delete=models.CASCADE,
     )
-    website = models.CharField(
+    web_site = models.CharField(
         verbose_name='웹사이트',
         max_length=50,
         null=True,
@@ -97,4 +107,3 @@ class UserProfile(models.Model):
         verbose_name='소개글',
         null=True,
     )
-
