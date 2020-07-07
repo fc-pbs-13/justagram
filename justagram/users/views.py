@@ -1,21 +1,29 @@
 from rest_framework import status, mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from users.models import User, UserProfile
-from users.serializer import UserSignupSerializer, UserSignSerializer, UserProfileSerializer
+from users.serializers import UserSignupSerializer, UserSignSerializer, UserProfileSerializer
 
 
-class UserSignupViewSet(mixins.CreateModelMixin,
-                        mixins.RetrieveModelMixin,
-                        mixins.DestroyModelMixin,
-                        GenericViewSet):
+class UserViewSet(mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
+                  mixins.DestroyModelMixin,
+                  GenericViewSet):
     """
     회원 가입, 회원 탈퇴 View
     """
     queryset = User.objects.all()
     serializer_class = UserSignupSerializer
+
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        return super().get_permissions()
 
 
 class UserSignViewSet(GenericViewSet):
@@ -44,3 +52,5 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
                          GenericViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
