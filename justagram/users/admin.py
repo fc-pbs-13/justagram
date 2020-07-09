@@ -1,27 +1,31 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from users.models import User
+from users.models import User, UserProfile
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('email', 'name', 'nickname', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = ('id', 'email', 'name', 'username', 'is_staff')
+    list_filter = ('is_staff',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('user_name', {'fields': ('name',)}),
-        ('user_nickname', {'fields': ('nickname',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('user_username', {'fields': ('username',)}),
+        ('Permissions', {'fields': ('is_staff',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'nickname', 'password1', 'password2'),
+            'fields': ('email', 'name', 'username', 'password1', 'password2'),
         }),
     )
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
+
+
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name', 'username']
 
 
 admin.site.register(User, UserAdmin)
