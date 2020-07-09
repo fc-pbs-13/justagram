@@ -4,13 +4,17 @@ from users.models import User, UserProfile
 from rest_framework.serializers import ModelSerializer
 
 
-class UserSignupSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
+    """
+    회원 생성, 회원 탈퇴 Serializer
+    """
+
     class Meta:
         model = User
         fields = (
             'email',
             'name',
-            'nickname',
+            'username',
             'password',
         )
         extra_kwargs = {
@@ -18,7 +22,30 @@ class UserSignupSerializer(ModelSerializer):
         }
 
 
+class UserPasswordSerializer(ModelSerializer):
+    new_password1 = serializers.CharField(max_length=128,
+                                          required=False)
+    new_password2 = serializers.CharField(max_length=128,
+                                          required=False)
+
+    class Meta:
+        model = User
+        fields = (
+            'password',
+            'new_password1',
+            'new_password2',
+        )
+        extra_kwargs = {
+            'new_password1': {'write_only': True},
+            'new_password2': {'write_only': True}
+        }
+
+
 class UserSignSerializer(ModelSerializer):
+    """
+    로그인, 로그아웃 Serializer
+    """
+
     class Meta:
         model = User
         fields = (
@@ -33,10 +60,13 @@ class UserSignSerializer(ModelSerializer):
 
 
 class UserProfileSerializer(ModelSerializer):
+    """
+    프로필 Serializer
+    """
     name = serializers.CharField(source='user.name',
                                  allow_null=True
                                  )
-    nickname = serializers.CharField(source='user.nickname',
+    username = serializers.CharField(source='user.username',
                                      allow_null=True
                                      )
 
@@ -44,21 +74,24 @@ class UserProfileSerializer(ModelSerializer):
         model = UserProfile
         fields = (
             'name',
-            'nickname',
+            'username',
             'web_site',
             'introduction',
         )
 
     def update(self, instance, validated_data):
+        """
+        web_sit, introduction update to UserProfile
+        name, username update to User
+        """
         user = validated_data.pop('user')
         name = user.pop('name')
-        nickname = user.pop('nickname')
+        username = user.pop('username')
 
-        super(UserProfileSerializer, self).update(instance, validated_data)
+        super().update(instance, validated_data)
 
-        if name:
-            instance.user.name = name
-            instance.user.nickname = nickname
-            instance.user.save(update_fields=('name', 'nickname',))
+        instance.user.name = name
+        instance.user.username = username
+        instance.user.save(update_fields=('name', 'username',))
 
         return instance
