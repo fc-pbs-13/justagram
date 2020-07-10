@@ -99,3 +99,4 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.data['username'], data['username'])
         self.assertEqual(response.data['web_site'], data['web_site'])
         self.assertEqual(response.data['introduction'], data['introduction'])
+
