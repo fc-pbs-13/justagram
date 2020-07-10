@@ -24,9 +24,5 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name', 'username']
-
-
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
