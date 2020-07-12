@@ -1,13 +1,21 @@
 from rest_framework.serializers import ModelSerializer
 
-from posts.models import Post
+from posts.models import Post, Photo
 
 
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        fields = {
+        fields = (
             'owner',
-            'post'
-        }
-        read_only_field = ['owner']
+            'contents',
+        )
+        read_only_fields = ('owner',)
+
+
+class PhotoSerializer(ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = (
+            'post_image',
+        )

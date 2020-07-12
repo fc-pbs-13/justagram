@@ -63,12 +63,8 @@ class UserProfileSerializer(ModelSerializer):
     """
     프로필 Serializer
     """
-    name = serializers.CharField(source='user.name',
-                                 allow_null=True
-                                 )
-    username = serializers.CharField(source='user.username',
-                                     allow_null=True
-                                     )
+    name = serializers.CharField(source='user.name')
+    username = serializers.CharField(source='user.username')
 
     class Meta:
         model = UserProfile
@@ -84,7 +80,7 @@ class UserProfileSerializer(ModelSerializer):
         web_sit, introduction update to UserProfile
         name, username update to User
         """
-        user = validated_data.pop('user')
+        user = validated_data.pop('profile')
         name = user.pop('name')
         username = user.pop('username')
 

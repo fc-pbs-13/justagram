@@ -1,8 +1,15 @@
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
 class Post(models.Model):
-    owner = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE())
-    photo = ArrayField(models.ImageField())
+    owner = models.ForeignKey('users.UserProfile',
+                              related_name='owner',
+                              on_delete=models.CASCADE, )
     contents = models.TextField()
+
+
+class Photo(models.Model):
+    post = models.ForeignKey('posts.Post',
+                             related_name='post',
+                             on_delete=models.CASCADE)
+    post_image = models.ImageField()

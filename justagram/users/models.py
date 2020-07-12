@@ -1,7 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import (
     AbstractUser, UserManager
 )
+from django.db import models
 
 
 class MyUserManager(UserManager):
@@ -66,7 +66,7 @@ class User(AbstractUser):
 class UserProfile(models.Model):
     user = models.OneToOneField(
         'users.User',
-        related_name='user',
+        related_name='profile',
         on_delete=models.CASCADE,
     )
     web_site = models.CharField(
