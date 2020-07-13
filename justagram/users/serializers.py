@@ -63,12 +63,8 @@ class UserProfileSerializer(ModelSerializer):
     """
     프로필 Serializer
     """
-    name = serializers.CharField(source='user.name',
-                                 allow_null=True
-                                 )
-    username = serializers.CharField(source='user.username',
-                                     allow_null=True
-                                     )
+    name = serializers.CharField(source='user.name')
+    username = serializers.CharField(source='user.username')
 
     class Meta:
         model = UserProfile
