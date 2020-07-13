@@ -17,7 +17,6 @@ class PostViewSetTestCase(APITestCase):
         self.post = Post.objects.create(
             contents='test',
             owner=self.user.profile
-
         )
 
     def test_create_post(self):
