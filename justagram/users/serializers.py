@@ -80,7 +80,7 @@ class UserProfileSerializer(ModelSerializer):
         web_sit, introduction update to UserProfile
         name, username update to User
         """
-        user = validated_data.pop('profile')
+        user = validated_data.pop('user')
         name = user.pop('name')
         username = user.pop('username')
 

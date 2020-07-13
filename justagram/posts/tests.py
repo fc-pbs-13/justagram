@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from users.models import User, UserProfile
+from posts.models import Post
+from users.models import User
 
 
 class PostViewSetTestCase(APITestCase):
@@ -12,13 +13,39 @@ class PostViewSetTestCase(APITestCase):
             username='user',
             password='user',
         )
-        self.profile = UserProfile.objects.all()
-        print(self.profile)
 
-    def test_create(self):
-        data = {
-            'contents': 'test',
-        }
+        self.post = Post.objects.create(
+            contents='test',
+            owner=self.user.profile
+
+        )
+
+    def test_create_post(self):
+        data = {'contents': 'test',
+                'image': 'test',
+                }
+        self.client.force_authenticate(user=self.user)
+
         response = self.client.post(f'/api/post', data=data)
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['contents'], data['contents'])
+        self.fail()
+
+    def test_update_post(self):
+        data = {'contents': 'good', }
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put(f'/api/post/{self.post.id}', data=data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['contents'], data['contents'])
+        self.fail()
+
+    def test_delete_post(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(f'/api/post/{self.post.id}')
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Post.objects.exists())
         self.fail()

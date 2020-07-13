@@ -11,7 +11,6 @@ class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        print(self.request)
         serializer.save(
             owner=self.request.user.profile
         )
