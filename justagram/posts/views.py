@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from posts.models import Post
-from posts.serializers import PostSerializer
+from posts.models import Post, Photo
+from posts.serializers import PostSerializer, PhotoSerializer
 
 
 class PostViewSet(ModelViewSet):
@@ -14,3 +14,8 @@ class PostViewSet(ModelViewSet):
         serializer.save(
             owner=self.request.user.profile
         )
+
+
+class PhotoViewSet(ModelViewSet):
+    queryset = Photo.objects.all()
+    serializer_class = PhotoSerializer
