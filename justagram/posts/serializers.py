@@ -6,21 +6,25 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = (
+            'id',
+            'post',
             'post_image',
         )
+        read_only_fields = ['post']
 
 
 class PostSerializer(serializers.ModelSerializer):
-    photo = PhotoSerializer(many=True, read_only=True)
     input_photo = serializers.ListField(
         child=serializers.ImageField(),
         write_only=True,
     )
+    photo = PhotoSerializer(many=True, read_only=True)
     name = serializers.CharField(source='owner.user.name', read_only=True)
 
     class Meta:
         model = Post
         fields = (
+            'id',
             'name',
             'contents',
             'photo',

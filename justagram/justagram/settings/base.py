@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'posts',
-    'rest_framework.authtoken',
     'core',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +135,7 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+ROOT_URLCONF = 'justagram.urls'
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
