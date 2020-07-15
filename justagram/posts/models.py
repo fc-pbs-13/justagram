@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Post(models.Model):
-    owner = models.ForeignKey('users.UserProfile',
-                              related_name='owner',
+    owner = models.ForeignKey('users.User',
+                              related_name='post',
                               on_delete=models.CASCADE,
                               )
     contents = models.TextField()

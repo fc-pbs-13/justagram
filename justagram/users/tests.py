@@ -22,7 +22,7 @@ class UserTestCase(APITestCase):
 
     def test_user_create(self):
         # Create user test code
-        response = self.client.post('/api/user', data=self.data)
+        response = self.client.post('/user', data=self.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['email'], self.data['email'])
@@ -38,7 +38,7 @@ class UserTestCase(APITestCase):
 
     def test_user_delete(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(f'/api/user/{self.user.pk}')
+        response = self.client.delete(f'/user/{self.user.pk}')
 
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         self.assertFalse(User.objects.count())
@@ -46,7 +46,7 @@ class UserTestCase(APITestCase):
 
     def test_user_retrieve(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(f'/api/user/{self.user.pk}')
+        response = self.client.get(f'/user/{self.user.pk}')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_user_update_password(self):
@@ -58,15 +58,15 @@ class UserTestCase(APITestCase):
         }
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.put(f'/api/user/{self.user.pk}/change_password', data=data)
+        response = self.client.put(f'/user/{self.user.pk}/change_password', data=data)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
-        response = self.client.post('/api/user/login', data={'email': 'user@user.com', 'password': '1'})
+        response = self.client.post('/user/login', data={'email': 'user@user.com', 'password': '1'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_user_login(self):
-        response = self.client.post('/api/user/login',
+        response = self.client.post('/user/login',
                                     data={'email': 'user@user.com', 'password': 'user'})
 
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -76,7 +76,7 @@ class UserTestCase(APITestCase):
         Token.objects.create(user=self.user)
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete('/api/user/logout')
+        response = self.client.delete('/user/logout')
 
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         self.assertFalse(Token.objects.exists())
@@ -90,7 +90,7 @@ class UserTestCase(APITestCase):
             'web_site': '1',
             'introduction': '1',
         }
-        response = self.client.put(f'/api/profile/{self.user.pk}',
+        response = self.client.put(f'/profile/{self.user.pk}',
                                    data=data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

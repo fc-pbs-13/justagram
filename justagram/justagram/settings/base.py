@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'users',
     'posts',
     'core',
+    'comments',
+    'mptt',
     'rest_framework.authtoken',
+    'treewidget',
 ]
 
 MIDDLEWARE = [
