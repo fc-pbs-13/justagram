@@ -14,7 +14,9 @@ class Comment(MPTTModel):
     post = models.ForeignKey(
         'posts.Post',
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        null=True,
+        blank=True
     )
     user = models.ForeignKey(
         'users.User',
@@ -22,4 +24,3 @@ class Comment(MPTTModel):
         related_name='comments'
     )
     comment = models.CharField(max_length=300)
-

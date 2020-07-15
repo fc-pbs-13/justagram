@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from comments.serializers import CommentSerializer
 from posts.models import Post, Photo
 
 
@@ -20,6 +22,7 @@ class PostSerializer(serializers.ModelSerializer):
     )
     photo = PhotoSerializer(many=True, read_only=True)
     name = serializers.CharField(source='owner.username', read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
@@ -29,6 +32,7 @@ class PostSerializer(serializers.ModelSerializer):
             'contents',
             'photo',
             'input_photo',
+            'comments',
         )
 
     def create(self, validated_data):

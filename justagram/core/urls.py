@@ -17,12 +17,16 @@ user_router = routers.NestedSimpleRouter(router, 'user')
 user_router.register('post', PostViewSet)
 user_router.register('profile', UserProfileViewSet)
 
-post_router = routers.NestedSimpleRouter(user_router, 'post')
+post_router = routers.NestedSimpleRouter(user_router, 'post', lookup='post')
 post_router.register('photo', PhotoViewSet)
 post_router.register('comment', CommentViewSet)
+
+comment_router = routers.NestedSimpleRouter(router, 'comment', lookup='comment')
+comment_router.register('comment', CommentViewSet)
 
 urlpatterns = [
     url('', include(router.urls)),
     url('', include(user_router.urls)),
     url('', include(post_router.urls)),
+    url('', include(comment_router.urls))
 ]

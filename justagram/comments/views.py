@@ -1,29 +1,22 @@
-from rest_framework import viewsets, status
-from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from comments.models import Comment
 from comments.serializers import CommentSerializer
 from posts.models import Post
-from users.models import User
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    def create(self, request, *args, **kwargs):
-        if request.data['parent']:
-            parent_number = request.data['parent']
-            parent = Comment.objects.get(id=int(parent_number))
-            if not parent.parent:
-                return super().create(request, *args, **kwargs)
-        else:
-            return super().create(request, *args, **kwargs)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(
-            user=User.objects.get(id=self.kwargs['nested_1_pk']),
-            post=Post.objects.get(id=self.kwargs['nested_2_pk']),
-        )
+        if 'comment_pk' in self.kwargs:
+            parent = get_object_or_404(Comment, id=self.kwargs.get('comment_pk'))
+            serializer.save(user=self.request.user, parent=parent)
+        else:
+            post = get_object_or_404(Post, id=self.kwargs.get('post_pk'))
+            serializer.save(user=self.request.user, post=post)
