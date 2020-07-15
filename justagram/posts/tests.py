@@ -32,13 +32,13 @@ class PostViewSetTestCase(APITestCase):
 
         self.post = Post.objects.create(
             contents='test',
-            owner=self.user.profile,
+            owner=self.user,
         )
 
     def test_create_post(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.post(f'/api/post', data=self.multiple_data)
+        response = self.client.post(f'/post', data=self.multiple_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['contents'], self.multiple_data['contents'])
         self.assertEqual(len(response.data['photo']), len(self.multiple_data['input_photo']))
@@ -46,21 +46,21 @@ class PostViewSetTestCase(APITestCase):
     def test_list_post(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/post')
+        response = self.client.get('/post')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_post(self):
         data = {'contents': 'good', }
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.patch(f'/api/post/{self.post.id}', data=data)
+        response = self.client.patch(f'/post/{self.post.id}', data=data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['contents'], data['contents'])
 
     def test_delete_post(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(f'/api/post/{self.post.id}')
+        response = self.client.delete(f'/post/{self.post.id}')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Post.objects.exists())

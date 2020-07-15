@@ -19,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     photo = PhotoSerializer(many=True, read_only=True)
-    name = serializers.CharField(source='owner.user.name', read_only=True)
+    name = serializers.CharField(source='owner.username', read_only=True)
 
     class Meta:
         model = Post
