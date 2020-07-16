@@ -100,3 +100,18 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.data['web_site'], data['web_site'])
         self.assertEqual(response.data['introduction'], data['introduction'])
 
+    def test(self):
+        User.objects.create(
+            email='user1@user1.com',
+            name='user1',
+            username='user1',
+            password='user1',
+        )
+
+        User.objects.create(
+            email='user2@user2.com',
+            name='user1',
+            username='user2',
+            password='user1',
+        )
+        print(User.objects.filter(name='user1'))

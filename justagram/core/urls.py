@@ -3,6 +3,7 @@ from django.urls import include
 from rest_framework.routers import SimpleRouter
 from rest_framework_nested import routers
 from comments.views import CommentViewSet
+from follows.views import FollowViewSet
 from posts.views import PostViewSet, PhotoViewSet
 from users.views import UserViewSet, UserProfileViewSet
 
@@ -12,10 +13,14 @@ router.register('photo', PhotoViewSet)
 router.register('user', UserViewSet)
 router.register('profile', UserProfileViewSet)
 router.register('comment', CommentViewSet)
+router.register('follow', FollowViewSet)
 
 user_router = routers.NestedSimpleRouter(router, 'user')
 user_router.register('post', PostViewSet)
 user_router.register('profile', UserProfileViewSet)
+
+profile_router = routers.NestedSimpleRouter(router, 'profile', lookup='profile')
+profile_router.register('follow', FollowViewSet)
 
 post_router = routers.NestedSimpleRouter(user_router, 'post', lookup='post')
 post_router.register('photo', PhotoViewSet)
@@ -28,5 +33,6 @@ urlpatterns = [
     url('', include(router.urls)),
     url('', include(user_router.urls)),
     url('', include(post_router.urls)),
-    url('', include(comment_router.urls))
+    url('', include(comment_router.urls)),
+    url('', include(profile_router.urls)),
 ]
