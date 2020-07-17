@@ -2,8 +2,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from follows.models import Follow
-from follows.serializers import FollowSerializer
+from relations.models import Follow
+from relations.serializers import FollowSerializer
 from users.models import User
 
 

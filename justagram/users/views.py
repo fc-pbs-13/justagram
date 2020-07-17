@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAu
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from follows.models import Follow
 from users.models import User, UserProfile
 from users.serializers import UserSerializer, UserSignSerializer, UserProfileSerializer, UserPasswordSerializer
 
@@ -93,15 +92,14 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     @action(methods=['get'], detail=True)
-    def follow(self, request, *args, **kwargs):
-        user = User.objects.filter(to_follow_user__from_follow_user=request.user,
-                                   to_follow_user__related_type='f')
+    def show_follow(self, request, *args, **kwargs):
+        user = User.objects.filter(to_follow_user__from_follow_user=request.user)
         serializers = UserSerializer(user, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True)
-    def block(self, request, *args, **kwargs):
-        user = User.objects.filter(to_follow_user__from_follow_user=request.user,
-                                   to_follow_user__related_type='b')
-        serializers = UserSerializer(user, many=True)
-        return Response(serializers.data, status=status.HTTP_200_OK)
+    # @action(methods=['get'], detail=True)
+    # def show_block(self, request, *args, **kwargs):
+    #     user = User.objects.filter(to_follow_user__from_follow_user=request.user,
+    #                                to_follow_user__related_type='b')
+    #     serializers = UserSerializer(user, many=True)
+    #     return Response(serializers.data, status=status.HTTP_200_OK)

@@ -3,7 +3,7 @@ from django.urls import include
 from rest_framework.routers import SimpleRouter
 from rest_framework_nested import routers
 from comments.views import CommentViewSet
-from follows.views import FollowViewSet
+from relations.views import FollowViewSet
 from likes.views import CommentLikeViewSet, PostLikeViewSet
 from posts.views import PostViewSet, PhotoViewSet
 from users.views import UserViewSet, UserProfileViewSet
