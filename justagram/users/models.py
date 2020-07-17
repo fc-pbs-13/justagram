@@ -78,3 +78,11 @@ class UserProfile(models.Model):
         verbose_name='소개글',
         null=True,
     )
+    # 내가 팔로우 한 사람
+    following_count = models.IntegerField(
+        default=0
+    )
+    # 나를 팔로우 한 사람
+    follower_count = models.IntegerField(
+        default=0
+    )

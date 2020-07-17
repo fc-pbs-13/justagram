@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from posts.models import Post
 from users.models import User, UserProfile
 from rest_framework.serializers import ModelSerializer
 
@@ -43,7 +44,7 @@ class UserPasswordSerializer(ModelSerializer):
 
 class UserSignSerializer(ModelSerializer):
     """
-    로그인, 로그아웃 Serializer
+    로그인 Serializer
     """
 
     class Meta:
@@ -65,6 +66,7 @@ class UserProfileSerializer(ModelSerializer):
     """
     name = serializers.CharField(source='user.name')
     username = serializers.CharField(source='user.username')
+    post_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = UserProfile
@@ -73,7 +75,17 @@ class UserProfileSerializer(ModelSerializer):
             'username',
             'web_site',
             'introduction',
+            'following_count',
+            'follower_count',
+            'post_count',
         )
+        read_only_fields = (
+            'following_count',
+            'follower_count',
+        )
+
+    def get_post_count(self, obj):
+        return Post.objects.filter(owner_id=obj.id).count()
 
     def update(self, instance, validated_data):
         """

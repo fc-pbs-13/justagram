@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'posts',
     'core',
     'comments',
+    'relations',
+    'likes',
     'mptt',
     'rest_framework.authtoken',
 ]
