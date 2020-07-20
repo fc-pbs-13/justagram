@@ -92,9 +92,16 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     @action(methods=['get'], detail=True)
-    def show_follow(self, request, *args, **kwargs):
+    def show_following(self, request, *args, **kwargs):
         user = User.objects.filter(to_follow_user__from_follow_user=kwargs['pk'],
                                    to_follow_user__related_type='f')
+        serializers = UserSerializer(user, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=True)
+    def show_follower(self, request, *args, **kwargs):
+        print(kwargs)
+        user = User.objects.filter(from_follow_user__to_follow_user=kwargs['pk'],)
         serializers = UserSerializer(user, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
 
