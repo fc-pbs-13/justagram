@@ -27,7 +27,6 @@ SECRET_KEY = '+mtwethv_x+li#05il82*)$b@769p3#o%r=vj_+ifs0!$wo(tc'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'users',
+    'posts',
+    'core',
+    'comments',
+    'relations',
+    'likes',
+    'mptt',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +128,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TEST = False
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+}
+
+AUTH_USER_MODEL = 'users.User'
+
+ROOT_URLCONF = 'justagram.urls'
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
