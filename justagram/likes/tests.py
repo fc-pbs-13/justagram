@@ -37,4 +37,3 @@ class PostViewSetTestCase(APITestCase):
         response = self.client.delete(f'/post_like/{post_like.id}')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(PostLike.objects.all().exists())
-        self.fail()
