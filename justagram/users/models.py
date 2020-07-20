@@ -86,3 +86,6 @@ class UserProfile(models.Model):
     follower_count = models.IntegerField(
         default=0
     )
+    post_count = models.IntegerField(
+        default=0
+    )

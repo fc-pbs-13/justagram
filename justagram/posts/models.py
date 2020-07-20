@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models import F
+
+from users.models import UserProfile
 
 
 class Post(models.Model):
@@ -7,6 +10,12 @@ class Post(models.Model):
                               on_delete=models.CASCADE,
                               )
     contents = models.TextField()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        post = UserProfile.objects.filter(id=self.owner_id)
+        post.update(post_count=F('post_count')+1)
 
 
 class Photo(models.Model):

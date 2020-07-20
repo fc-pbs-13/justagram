@@ -19,3 +19,8 @@ class FollowViewSet(ModelViewSet):
             from_follow_user=self.request.user,
             to_follow_user=to_follow_user
         )
+
+    def get_serializer_context(self):
+        context = super(FollowViewSet, self).get_serializer_context()
+        context['action'] = self.action
+        return context

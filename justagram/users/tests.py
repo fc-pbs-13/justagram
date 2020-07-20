@@ -114,4 +114,3 @@ class UserTestCase(APITestCase):
             username='user2',
             password='user1',
         )
-        print(User.objects.filter(name='user1'))

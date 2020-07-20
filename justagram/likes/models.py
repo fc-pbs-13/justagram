@@ -2,11 +2,11 @@ from django.db import models
 
 
 class PostLike(models.Model):
-    from_like_post = models.ForeignKey('users.User',
-                                       null=True,
-                                       on_delete=models.CASCADE,
-                                       related_name='from_like_post'
-                                       )
+    post_user = models.ForeignKey('users.User',
+                             null=True,
+                             on_delete=models.CASCADE,
+                             related_name='post_user'
+                             )
     to_like_post = models.ForeignKey('posts.Post',
                                      null=True,
                                      on_delete=models.CASCADE,
@@ -15,16 +15,16 @@ class PostLike(models.Model):
 
     class Meta:
         unique_together = (
-            ('from_like_post', 'to_like_post')
+            ('post_user', 'to_like_post')
         )
 
 
 class CommentLike(models.Model):
-    from_like_comment = models.ForeignKey('users.User',
-                                          null=True,
-                                          on_delete=models.CASCADE,
-                                          related_name='from_like_comment'
-                                          )
+    comment_user = models.ForeignKey('users.User',
+                             null=True,
+                             on_delete=models.CASCADE,
+                             related_name='comment_user'
+                             )
     to_like_comment = models.ForeignKey('comments.Comment',
                                         null=True,
                                         on_delete=models.CASCADE,
@@ -33,5 +33,5 @@ class CommentLike(models.Model):
 
     class Meta:
         unique_together = (
-            ('from_like_comment', 'to_like_comment')
+            ('comment_user', 'to_like_comment')
         )

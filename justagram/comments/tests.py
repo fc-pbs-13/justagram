@@ -45,7 +45,7 @@ class CommentTestCase(APITestCase):
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(f'/comment/{self.comment.id}/comment', data=data)
-        print(response.data)
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['comment'], data['comment'])
         self.assertEqual(response.data['parent'], self.comment.id)

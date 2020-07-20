@@ -66,7 +66,6 @@ class UserProfileSerializer(ModelSerializer):
     """
     name = serializers.CharField(source='user.name')
     username = serializers.CharField(source='user.username')
-    post_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = UserProfile
@@ -83,9 +82,6 @@ class UserProfileSerializer(ModelSerializer):
             'following_count',
             'follower_count',
         )
-
-    def get_post_count(self, obj):
-        return Post.objects.filter(owner_id=obj.id).count()
 
     def update(self, instance, validated_data):
         """
