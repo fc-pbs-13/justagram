@@ -36,11 +36,9 @@ post_router = routers.NestedSimpleRouter(user_router, 'post', lookup='post')
 post_router.register('photo', PhotoViewSet)
 post_router.register('comment', CommentViewSet)
 
-urlpatterns = [
-    url('', include(router.urls)),
-    url('', include(user_router.urls)),
-    url('', include(post_router.urls)),
-    url('', include(comment_router.urls)),
-    url('', include(profile_router.urls)),
-    url('', include(post_like_router.urls)),
-]
+urlpatterns = router.urls
+urlpatterns += user_router.urls
+urlpatterns += post_router.urls
+urlpatterns += comment_router.urls
+urlpatterns += profile_router.urls
+urlpatterns += post_like_router.urls

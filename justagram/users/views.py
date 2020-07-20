@@ -93,13 +93,14 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
 
     @action(methods=['get'], detail=True)
     def show_follow(self, request, *args, **kwargs):
-        user = User.objects.filter(to_follow_user__from_follow_user=request.user)
+        user = User.objects.filter(to_follow_user__from_follow_user=kwargs['pk'],
+                                   to_follow_user__related_type='f')
         serializers = UserSerializer(user, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
 
-    # @action(methods=['get'], detail=True)
-    # def show_block(self, request, *args, **kwargs):
-    #     user = User.objects.filter(to_follow_user__from_follow_user=request.user,
-    #                                to_follow_user__related_type='b')
-    #     serializers = UserSerializer(user, many=True)
-    #     return Response(serializers.data, status=status.HTTP_200_OK)
+    @action(methods=['get'], detail=True)
+    def show_block(self, request, *args, **kwargs):
+        user = User.objects.filter(to_follow_user__from_follow_user=kwargs['pk'],
+                                   to_follow_user__related_type='b')
+        serializers = UserSerializer(user, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
