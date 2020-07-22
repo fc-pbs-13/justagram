@@ -17,7 +17,7 @@ class CommentLikeViewSet(ModelViewSet):
     def perform_create(self, serializer):
         to_like_comment = get_object_or_404(Comment, id=self.kwargs.get('comment_pk'))
         serializer.save(
-            post_user=self.request.user,
+            comment_user=self.request.user,
             to_like_comment=to_like_comment,
         )
 
@@ -29,9 +29,9 @@ class PostLikeViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        to_like_comment = get_object_or_404(Post, id=self.kwargs.get('post_pk'))
+        to_like_post = get_object_or_404(Post, id=self.kwargs.get('post_pk'))
         serializer.save(
             post_user=self.request.user,
-            to_like_post=to_like_comment,
+            to_like_post=to_like_post,
         )
 

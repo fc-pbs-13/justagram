@@ -24,3 +24,4 @@ class Comment(MPTTModel):
         related_name='comments'
     )
     comment = models.CharField(max_length=300)
+    like_count = models.IntegerField(default=0)

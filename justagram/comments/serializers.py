@@ -21,5 +21,6 @@ class CommentSerializer(serializers.ModelSerializer):
             'post',
             'user',
             'children',
+            'like_count',
         )
-        read_only_fields = ['user', 'post']
+        read_only_fields = ['user', 'post', 'like_count']

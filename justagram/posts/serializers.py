@@ -33,7 +33,9 @@ class PostSerializer(serializers.ModelSerializer):
             'photo',
             'input_photo',
             'comments',
+            'like_count'
         )
+        read_only_fields = ('like_count',)
 
     def create(self, validated_data):
         images_data = validated_data.pop('input_photo')

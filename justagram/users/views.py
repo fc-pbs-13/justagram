@@ -1,10 +1,12 @@
 from rest_framework import status, mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from core.permissions import IsOwner, IsAnonymous
 from users.models import User, UserProfile
 from users.serializers import UserSerializer, UserSignSerializer, UserProfileSerializer, UserPasswordSerializer
 
@@ -19,7 +21,7 @@ class UserViewSet(mixins.CreateModelMixin,
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwner]
 
     def get_serializer_class(self):
         if self.action == 'login':
@@ -29,47 +31,39 @@ class UserViewSet(mixins.CreateModelMixin,
         return super().get_serializer_class()
 
     def get_permissions(self):
-        if self.action == 'create':
-            return [AllowAny()]
-        elif self.action == 'login':
-            return [AllowAny()]
+        if self.action in ['create', 'login']:
+            return [IsAnonymous()]
         return super().get_permissions()
 
     @action(methods=['put'], detail=True, )
-    def change_password(self, request, *args, **kwargs, ):
-        instance = request.user
-        serializer = self.get_serializer(instance,
-                                         data=request.data)
-        serializer.is_valid()
-        password = request.data['password']
+    def change_password(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if instance.check_password(password):
-            request_data = request.data
-            new_password1 = request_data['new_password1']
-            new_password2 = request_data['new_password2']
+        new_password = request.data['new_password1']
+        request.user.password = new_password
+        request.user.save()
 
-            if new_password1 == new_password2:
-                request.user.password = new_password1
-                request.user.save()
-                return Response(status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
     @action(methods=['post'], detail=False)
     def login(self, request, *args, **kwargs):
-        email = User.objects.get(email=request.data['email'])
-        password = request.data['password']
+        user = get_object_or_404(User, email=request.data.get('email'))
+        serializer = self.get_serializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if email.check_password(password):
-            token, create = Token.objects.get_or_create(user=email)
-            return Response({'token': token.key},
-                            status=status.HTTP_201_CREATED
-                            )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        token, create = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key},
+                        status=status.HTTP_201_CREATED
+                        )
 
     @action(methods=['delete'], detail=False)
     def logout(self, request, *args, **kwargs):
-        request.user.auth_token.delete()
+        try:
+            request.user.auth_token.delete()
+        except(AttributeError,):
+            return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -101,7 +95,7 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
     @action(methods=['get'], detail=True)
     def show_follower(self, request, *args, **kwargs):
         print(kwargs)
-        user = User.objects.filter(from_follow_user__to_follow_user=kwargs['pk'],)
+        user = User.objects.filter(from_follow_user__to_follow_user=kwargs['pk'], )
         serializers = UserSerializer(user, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
 

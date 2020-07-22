@@ -12,18 +12,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Photo',
+            name='CheckShow',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('post_image', models.ImageField(upload_to='post_photo')),
             ],
         ),
         migrations.CreateModel(
-            name='Post',
+            name='Story',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('contents', models.TextField()),
-                ('like_count', models.IntegerField(default=0)),
+                ('time', models.DateTimeField(auto_now_add=True)),
+                ('image', models.ImageField(null=True, upload_to='story_image')),
             ],
         ),
     ]
