@@ -34,8 +34,8 @@ class CommentLikeSerializer(ModelSerializer):
         read_only_fields = ('comment_user', 'to_like_comment')
 
     def validate(self, data):
-        if PostLike.objects.filter(comment_user=self.context['request'].user,
-                                   to_like_comment=self.context['view'].kwargs['comment_pk']).exists():
+        if CommentLike.objects.filter(comment_user=self.context['request'].user,
+                                      to_like_comment=self.context['view'].kwargs['comment_pk']).exists():
             raise serializers.ValidationError('The fields `comment_user`, `to_comment` must make a unique set.',
                                               code='unique')
 

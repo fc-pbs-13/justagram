@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'relations',
     'likes',
     'mptt',
+    'stories',
     'rest_framework.authtoken',
 ]
 
@@ -134,9 +135,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
     ],
 
 }

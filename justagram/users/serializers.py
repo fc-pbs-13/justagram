@@ -1,6 +1,6 @@
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
-from posts.models import Post
 from users.models import User, UserProfile
 from rest_framework.serializers import ModelSerializer
 
@@ -41,6 +41,27 @@ class UserPasswordSerializer(ModelSerializer):
             'new_password2': {'write_only': True}
         }
 
+    def validate(self, data):
+        new_password1 = data.get('new_password1')
+        new_password2 = data.get('new_password2')
+
+        if not new_password1:
+            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
+        elif not new_password2:
+            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
+        elif data['new_password1'] == data['new_password2']:
+            return data
+        else:
+            raise serializers.ValidationError("비밀번호가 서로 다릅니다.")
+
+    def validate_password(self, value):
+        user = self.instance
+        if not value:
+            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
+        elif user.check_password(value):
+            return value
+        raise serializers.ValidationError("잘못된 비밀번호 입니다.")
+
 
 class UserSignSerializer(ModelSerializer):
     """
@@ -58,6 +79,23 @@ class UserSignSerializer(ModelSerializer):
             'email': {'write_only': True},
             'password': {'write_only': True},
         }
+
+    def validate(self, data):
+        user = User.objects.get(email=data['email'])
+        if user.check_password(data['password']):
+            return data
+        else:
+            raise serializers.ValidationError("회원정보가 일치하지 않습니다.")
+
+    def validate_email(self, value):
+        if not value:
+            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
+        return value
+
+    def validate_password(self, value):
+        if not value:
+            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
+        return value
 
 
 class UserProfileSerializer(ModelSerializer):
@@ -81,6 +119,7 @@ class UserProfileSerializer(ModelSerializer):
         read_only_fields = (
             'following_count',
             'follower_count',
+            'post_count',
         )
 
     def update(self, instance, validated_data):

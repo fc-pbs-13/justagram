@@ -10,6 +10,7 @@ class Post(models.Model):
                               on_delete=models.CASCADE,
                               )
     contents = models.TextField()
+    like_count = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
