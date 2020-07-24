@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
 from users.models import User, UserProfile
 from rest_framework.serializers import ModelSerializer
@@ -13,6 +12,7 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'email',
             'name',
             'username',
@@ -56,9 +56,7 @@ class UserPasswordSerializer(ModelSerializer):
 
     def validate_password(self, value):
         user = self.instance
-        if not value:
-            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
-        elif user.check_password(value):
+        if user.check_password(value):
             return value
         raise serializers.ValidationError("잘못된 비밀번호 입니다.")
 
@@ -77,7 +75,7 @@ class UserSignSerializer(ModelSerializer):
 
         extra_kwargs = {
             'email': {'write_only': True},
-            'password': {'write_only': True},
+            'password': {'write_only': True}
         }
 
     def validate(self, data):
@@ -86,16 +84,6 @@ class UserSignSerializer(ModelSerializer):
             return data
         else:
             raise serializers.ValidationError("회원정보가 일치하지 않습니다.")
-
-    def validate_email(self, value):
-        if not value:
-            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
-        return value
-
-    def validate_password(self, value):
-        if not value:
-            raise serializers.ValidationError("반드시 입력해야 하는 값입니다.")
-        return value
 
 
 class UserProfileSerializer(ModelSerializer):
@@ -135,6 +123,10 @@ class UserProfileSerializer(ModelSerializer):
 
         instance.user.name = name
         instance.user.username = username
+
+        serializer = UserProfileSerializer(data=instance)
+        serializer.is_valid()
+
         instance.user.save(update_fields=('name', 'username',))
 
         return instance

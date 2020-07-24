@@ -60,10 +60,7 @@ class UserViewSet(mixins.CreateModelMixin,
 
     @action(methods=['delete'], detail=False)
     def logout(self, request, *args, **kwargs):
-        try:
-            request.user.auth_token.delete()
-        except(AttributeError,):
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

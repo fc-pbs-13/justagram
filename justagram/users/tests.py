@@ -291,7 +291,7 @@ class ChangePasswordCase(APITestCase):
         }
 
         response = self.client.get(self.url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_none_password(self):
         """password 미기입"""
@@ -418,4 +418,4 @@ class LogOutCase(APITestCase):
     def test_anonymoususer(self):
         respone = self.client.delete(self.url)
 
-        self.assertEqual(respone.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(respone.status_code, status.HTTP_401_UNAUTHORIZED)
