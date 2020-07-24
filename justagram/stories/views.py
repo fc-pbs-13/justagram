@@ -6,7 +6,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 
 from stories.models import Story, CheckShow
-from stories.serializers import StorySerializer, CheckShowSerializer
+from stories.serializers import StorySerializer, CheckShowSerializer, RetrieveSerializer
 from users.models import User
 
 
@@ -14,6 +14,11 @@ class StoryViewSet(viewsets.ModelViewSet):
     queryset = Story.objects.all()
     serializer_class = StorySerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return RetrieveSerializer
+        return super().get_serializer_class()
 
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, *args, **kwargs)

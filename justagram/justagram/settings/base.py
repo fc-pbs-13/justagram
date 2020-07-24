@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'likes',
     'mptt',
     'stories',
+    'tags',
     'rest_framework.authtoken',
 ]
 

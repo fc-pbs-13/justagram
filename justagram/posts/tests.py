@@ -27,6 +27,7 @@ class PostViewSetTestCase(APITestCase):
 
         self.multiple_data = {
             'input_photo': [self.generate_photo_file(), self.generate_photo_file()],
+            'tag': ['강아지', '고양이'],
             'contents': 'hello'
         }
 
