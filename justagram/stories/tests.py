@@ -18,13 +18,11 @@ class StoryTestCase(APITestCase):
             password='username',
         )
 
-        file = io.BytesIO()
+        self.img = io.BytesIO()
         image = Image.new('RGBA', size=(1, 1), color=(0, 0, 0))
-        image.save(file, 'png')
-        file.name = 'test.png'
-        file.seek(0)
-
-        self.img = file
+        image.save(self.img, 'png')
+        self.img.name = 'test.png'
+        self.img.seek(0)
 
     def test_create_story(self):
         self.client.force_authenticate(user=self.user)

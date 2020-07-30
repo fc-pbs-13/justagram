@@ -40,6 +40,7 @@ class PostViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(f'/post', data=self.multiple_data)
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['contents'], self.multiple_data['contents'])
         self.assertEqual(len(response.data['photo']), len(self.multiple_data['input_photo']))

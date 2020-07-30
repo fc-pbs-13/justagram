@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'stories',
     'tags',
     'rest_framework.authtoken',
+    'cacheops',
+
+    'django_extensions',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +61,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 ]
 
 ROOT_URLCONF = 'justagram.urls'
@@ -145,3 +151,54 @@ AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'justagram.urls'
 MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+
+INTERNAL_IPS = [
+
+    '127.0.0.1',
+
+]
+
+DEBUG_TOOLBAR_PANELS = [
+    'ddt_request_history.panels.request_history.RequestHistoryPanel',  # Here it is
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
+
+DEBUG_TOOLBAR_CONFIG = {
+    'RESULTS_STORE_SIZE': 100,
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+CACHEOPS_REDIS = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 1,
+    # 'socket_timeout': 0.5
+}
+
+CACHEOPS = {
+    'comments.Comment': {'ops': 'get', 'timeout': 30},
+    'posts.Post': {'ops': 'get', 'timeout': 30},
+    'users.User': {'ops': 'get', 'timeout': 30},
+    'users.UserProfile': {'ops': 'get', 'timeout': 30},
+}
