@@ -79,7 +79,7 @@ class UserSignSerializer(ModelSerializer):
         }
 
     def validate(self, data):
-        user = User.objects.get(email=data['email'])
+        user = self.instance
         if user.check_password(data['password']):
             return data
         else:

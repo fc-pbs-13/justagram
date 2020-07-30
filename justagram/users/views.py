@@ -77,7 +77,7 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
     """
     Show Profile, Update Profile View
     """
-    queryset = UserProfile.objects.all()
+    queryset = UserProfile.objects.all().select_related('user')
     serializer_class = UserProfileSerializer
 
     permission_classes = [IsAuthenticatedOrReadOnly]
