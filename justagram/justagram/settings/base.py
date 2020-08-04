@@ -14,6 +14,9 @@ import os
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env_file = os.path.dirname(os.path.dirname(BASE_DIR)) + '/.env'
 environ.Env.read_env(env_file=env_file)
@@ -197,8 +200,17 @@ CACHEOPS_REDIS = {
 }
 
 CACHEOPS = {
-    'comments.Comment': {'ops': 'get', 'timeout': 30},
-    'posts.Post': {'ops': 'get', 'timeout': 30},
-    'users.User': {'ops': 'get', 'timeout': 30},
-    'users.UserProfile': {'ops': 'get', 'timeout': 30},
+    'comments.Comment': {'ops': 'all', 'timeout': 30},
+    'posts.Post': {'ops': 'all', 'timeout': 30},
+    'users.User': {'ops': 'all', 'timeout': 30},
+    'users.UserProfile': {'ops': 'all', 'timeout': 30},
 }
+
+sentry_sdk.init(
+    dsn="https://9a71f316f2d342029a82f311ff3bf3ad@o427975.ingest.sentry.io/5372845",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)

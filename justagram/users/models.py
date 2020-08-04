@@ -2,6 +2,7 @@ from django.contrib.auth.models import (
     AbstractUser, UserManager
 )
 from django.db import models
+from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_SAVE, BEFORE_CREATE
 
 
 class MyUserManager(UserManager):
@@ -32,7 +33,7 @@ class MyUserManager(UserManager):
         return self._create_user(email, username, name, password, **extra_fields)
 
 
-class User(AbstractUser):
+class User(AbstractUser, LifecycleModel):
     email = models.EmailField(
         verbose_name='이메일',
         max_length=255,
@@ -51,19 +52,30 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
+    #     self.set_password(self.password)
+    #
+    #     if not self.pk:
+    #         super().save(*args, **kwargs)
+    #         UserProfile.objects.create(
+    #             user=self
+    #         )
+    #     else:
+    #         super().save(*args, **kwargs)
+
+    @hook(BEFORE_CREATE)
+    def hash_password(self):
+        print(self)
         self.set_password(self.password)
 
-        if not self.pk:
-            super().save(*args, **kwargs)
-            UserProfile.objects.create(
-                user=self
-            )
-        else:
-            super().save(*args, **kwargs)
+    @hook(AFTER_CREATE)
+    def create_profile(self):
+        UserProfile.objects.create(
+            user=self
+        )
 
 
-class UserProfile(models.Model):
+class UserProfile(LifecycleModel):
     user = models.OneToOneField(
         'users.User',
         related_name='profile',
@@ -89,3 +101,13 @@ class UserProfile(models.Model):
     post_count = models.IntegerField(
         default=0
     )
+
+    # @hook(AFTER_SAVE, when='user.name')
+    # def create_profile(self):
+    #     print('1')
+    #     self.set_password(self.password)
+    #
+    #     if not self.pk:
+    #         UserProfile.objects.create(
+    #             user=self
+    #         )

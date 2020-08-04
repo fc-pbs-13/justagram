@@ -4,6 +4,7 @@ from comments.serializers import CommentSerializer
 from posts.models import Post, Photo
 from tags.models import Tag, TagPost
 from tags.serializers import TagShowSerializer
+from users.serializers import UserProfileSerializer
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -23,7 +24,7 @@ class PostSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     photo = PhotoSerializer(many=True, read_only=True)
-    name = serializers.CharField(source='owner.username', read_only=True)
+    profile = UserProfileSerializer(source='owner.profile', read_only=True)
     post_comments = CommentSerializer(many=True, read_only=True)
     tag = serializers.ListField(
         child=serializers.CharField(max_length=50),
@@ -35,7 +36,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = (
             'id',
-            'name',
+            'profile',
             'contents',
             'photo',
             'input_photo',
